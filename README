@@ -1,0 +1,20 @@
+This is kittybot v1.0 by Wesley Ellis (aka tahnok) of tahnok AT gmail .com
+This perl script requires LWP::Simple, Bot::BasicBot, XML::RSS::Parser::Lite
+ and WWW::Shorten
+
+To use set $Nick, $Server, and $Channel
+
+Released under CC attribution-shareAlike
+ http://creativecommons.org/licenses/by-sa/2.5/
+
+Bugs:
+I don't think multi channel actually works... haven't bothered checking
+
+
+Features:
+-responds to !kitty and kitty! with a tinyurl link to a Flickr image with the tag kitty and the title of the image
+-responds to !die if your nick is tahnok (you can change that)
+-has a buggy !geoip command that attemps to map the hostname/ip of whomever just said !geoip
+-has an avatar mode. If your nick is tahnok (you can also change that) it will write what you priv msg it to the main channel
+-every 4 hours it posts a random kitty
+
