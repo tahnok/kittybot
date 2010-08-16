@@ -108,7 +108,7 @@ my $Nick = "kittybot";
 			body => "Random kitty: " . kitty(),
 		);
 		
-		return 14400;
+		return 43200;
 	}
 	sub kitty {
 		my $xml = get("http://api.flickr.com/services/feeds/photos_public.gne?tags=kitty&lang=en-us&format=rss_200");
@@ -116,7 +116,12 @@ my $Nick = "kittybot";
         	$rp->parse($xml);
         	my $choice = int(rand($rp->count()));
         	my $it = $rp->get($choice);
-        	return $it->get('title') . " " . makeashorterlink($it->get('url')) . "\n";	
+        	if(int(rand(10)) != 9){
+			return $it->get('title') . " " . makeashorterlink($it->get('url')) . "\n";	
+		}
+		else{
+			return $it->get('title') . " " . makeashorterlink("http://www.youtube.com/watch?v=oHg5SJYRHA0");
+		}
 		}
 # Create an instance of the bot and start it running. Connect
 # to the main perl IRC server, and join some channels.
