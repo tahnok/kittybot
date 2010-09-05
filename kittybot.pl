@@ -23,7 +23,7 @@ use WWW::Shorten 'TinyURL';
 use XML::RSS::Parser::Lite;
 
 
-my $Channel = "#mcgill";
+my $Channel = "#mctest";
 my $Server = "irc.freenode.net";
 my $Nick = "kittybot";
 
@@ -37,8 +37,8 @@ my $Nick = "kittybot";
 				$self->say(channel=>$Channel, body=>$strings,);
 			}
 		}
-	  	$strings = "\n" . $strings . "\n";
-	 	if( $strings =~ /!geoip/) {
+#	  	$strings = "\n" . $strings . "\n";
+	 	if( $strings =~ /^!geoip$/) {
 			my $nikk = $message->{raw_nick};
 			my $url = "";
 			if( $nikk =~ m/(.*)(@)(.*)$/ ) {
@@ -74,7 +74,7 @@ my $Nick = "kittybot";
 			$result = $result . ", " . $shorturl;
 			return $result;
 		}
-		if ($strings =~ /!die/ ) {
+		if ($strings =~ /^!die$/ ) {
 			if ( $message->{who} eq "tahnok") {
 				exit;
 			}
@@ -82,12 +82,16 @@ my $Nick = "kittybot";
 				return "har har nice try";
 			}
 		}
-		if ($strings =~ /kitty!/ ){
-			return kitty();
+		if ($strings =~ /\*kitty!\*/ ){
+			return kitty('kitty');
 		}
-		if ($strings =~ /!kitty/ ) {
-			return kitty();
+		if ($strings =~ /^!kitty$/ ) {
+			return kitty('kitty');
 		}
+		if ($strings =~ /^!tag\s([A-Za-z]+)$/ ) {
+			return kitty($1);
+		}
+
 	}
 
 # help text for the bot
@@ -105,13 +109,14 @@ my $Nick = "kittybot";
 		my $self = shift;
 		$self->say(
 			channel => $Channel,
-			body => "Random kitty: " . kitty(),
+			body => "Random kitty: " . kitty('kitty'),
 		);
 		
 		return 43200;
 	}
 	sub kitty {
-		my $xml = get("http://api.flickr.com/services/feeds/photos_public.gne?tags=kitty&lang=en-us&format=rss_200");
+		my $arg = $_[0];
+		my $xml = get("http://api.flickr.com/services/feeds/photos_public.gne?tags=" . $arg . "&lang=en-us&format=rss_200");
         	my $rp = new XML::RSS::Parser::Lite;
         	$rp->parse($xml);
         	my $choice = int(rand($rp->count()));
