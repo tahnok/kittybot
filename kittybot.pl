@@ -23,7 +23,7 @@ use WWW::Shorten 'TinyURL';
 use XML::RSS::Parser::Lite;
 
 
-my $Channel = "#mctest";
+my $Channel = "#mcgill";
 my $Server = "irc.freenode.net";
 my $Nick = "kittybot";
 
@@ -88,8 +88,11 @@ my $Nick = "kittybot";
 		if ($strings =~ /^!kitty$/ ) {
 			return kitty('kitty');
 		}
-		if ($strings =~ /^!tag\s([A-Za-z]+)$/ ) {
+		if ($strings =~ /^!tag\s([A-Za-z0-9]+)$/ ) {
 			return kitty($1);
+		}
+		if($strings =~ /^!wtf$/ ){
+		    return wtf();
 		}
 
 	}
@@ -119,8 +122,13 @@ my $Nick = "kittybot";
 		my $xml = get("http://api.flickr.com/services/feeds/photos_public.gne?tags=" . $arg . "&lang=en-us&format=rss_200");
         	my $rp = new XML::RSS::Parser::Lite;
         	$rp->parse($xml);
+		if($rp->count() == 0){
+			return "Error: no items";
+		}
+
         	my $choice = int(rand($rp->count()));
         	my $it = $rp->get($choice);
+		return "Ow, my brain" unless $it;
         	if(int(rand(10)) != 9){
 			return $it->get('title') . " " . makeashorterlink($it->get('url')) . "\n";	
 		}
@@ -128,6 +136,20 @@ my $Nick = "kittybot";
 			return $it->get('title') . " " . makeashorterlink("http://www.youtube.com/watch?v=oHg5SJYRHA0");
 		}
 		}
+	sub wtf {
+		my $xml = get("http://strangeweirdporn.com/feed/");
+		my $rp = new XML::RSS::Parser::Lite;
+		$rp->parse($xml);
+		if($rp->count() == 0){
+			return "Error: no items";
+		}
+
+		my $choice = int(rand($rp->count()));
+		my $it = $rp->get($choice);
+		return "Ow, my brain" unless $it;
+		return $it->get('title') . " " . makeashorterlink($it->get('url')) . "\n";	
+	
+	}
 # Create an instance of the bot and start it running. Connect
 # to the main perl IRC server, and join some channels.
 	MyBot->new(
